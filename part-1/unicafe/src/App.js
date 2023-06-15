@@ -22,7 +22,12 @@ const Button = (props) => {
 // statistic line component 
 const StatisticLine = ({ text, value }) => {
   return (
-    <p>{text} {value}</p>
+    <tbody>
+      <tr>
+        <td>{text}</td>
+        <td>{value}</td>
+      </tr>
+    </tbody>
   )
 }
 
@@ -37,14 +42,14 @@ const Statistics = ({ stats }) => {
 
   // display statistics only once feedback has been gathered
   return (
-    <div>
+    <table>
       <StatisticLine text='good' value={stats.good} />
       <StatisticLine text='neutral' value={stats.neutral} />
       <StatisticLine text='bad' value={stats.bad} />
       <StatisticLine text='all' value={stats.total} />
       <StatisticLine text='average' value={stats.average} />
       <StatisticLine text='positive' value={`${stats.positive} %`} />
-    </div>
+    </table>
   )
 }
 
