@@ -36,6 +36,20 @@ const App = () => {
     setFilter(event.target.value)
   }
 
+  // delete person from phonebook
+  const deletePerson = (id) => {
+    const person = persons.find(p => p.id === id)
+    
+    // confirm deletion using pop up window
+    if (window.confirm(`Delete ${person.name} ?`)) {
+      personService
+        .remove(id)
+        .then(deletedPerson => {
+          setPersons(persons.filter(p => p.id != id))
+        })
+    }
+  }
+
   // submit person details through form
   const addPerson = (event) => {
     event.preventDefault()
@@ -86,7 +100,10 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons persons={personsToShow} />
+      <Persons 
+        persons={personsToShow} 
+        deletePerson={deletePerson}
+      />
     </div>
   )
 }
