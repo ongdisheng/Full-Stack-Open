@@ -55,9 +55,23 @@ const App = () => {
     event.preventDefault()
 
     // handle duplicate names
-    const duplicates = persons.filter(person => person.name === newName)
-    if (duplicates.length > 0) {
-      alert(`${newName} is already added to phonebook`)
+    const person = persons.find(person => person.name === newName)
+    if (person) {
+      
+      // retrieve id of existing person
+      const id = person.id
+
+      // confirm number replacement using pop up window
+      if (window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)) {
+        const changedPerson = { ...person, number: newNumber }
+        personService
+          .update(id, changedPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(p => p.id !== id ? p : returnedPerson))
+            setNewName('')
+            setNewNumber('')
+          })
+      }
     }
 
     else {
