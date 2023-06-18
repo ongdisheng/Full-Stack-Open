@@ -3,6 +3,7 @@ import personService from './services/persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 
 // app component 
 const App = () => {
@@ -10,6 +11,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [message, setMessage] = useState(null)
+  const [status, setStatus] = useState(null)
 
   // fetch data from server using effect hook
   useEffect(() => {
@@ -70,6 +73,14 @@ const App = () => {
             setPersons(persons.map(p => p.id !== id ? p : returnedPerson))
             setNewName('')
             setNewNumber('')
+            setMessage(`Modified ${person.name}`)
+            setStatus('success')
+
+            // remove notification after 5s
+            setTimeout(() => {
+              setMessage(null)
+              setStatus(null)
+            }, 5000)
           })
       }
     }
@@ -88,6 +99,14 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+          setMessage(`Added ${returnedPerson.name}`)
+          setStatus('success')
+          
+          // remove notification after 5s
+          setTimeout(() => {
+            setMessage(null)
+            setStatus(null)
+          }, 5000)
         })
     }
   }
@@ -99,6 +118,11 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification 
+        message={message}
+        status={status} 
+      />
+
       <Filter 
         filter={filter}
         handleFilterChange={handleFilterChange}
