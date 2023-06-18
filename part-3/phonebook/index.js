@@ -72,6 +72,42 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
+const generateId = () => {
+    return Math.floor((Math.random() * 10000))
+}
+
+// handle post request for persons
+app.post('/api/persons', (request, response) => {
+    // retrieve new data from request
+    const body = request.body
+
+    // missing data
+    if (!body.name || !body.number) {
+        return response
+                    .status(400)
+                    .json({error: 'missing name or number'})
+    }
+
+    // found existing person with same name 
+    const existingPerson = persons.find(p => p.name === body.name)
+    if (existingPerson) {
+        return response
+                .status(400)
+                .json({error: 'name must be unique'})
+    }
+
+    const person = {
+        name: body.name,
+        number: body.number,
+        id: generateId()
+    }
+
+    // append newly created person
+    persons = persons.concat(person)
+
+    response.json(person)
+})
+
 // listen to requests on specified port
 const PORT = 3001
 app.listen(PORT, () => {
