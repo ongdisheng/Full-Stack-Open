@@ -28,9 +28,23 @@ let persons = [
     }
 ]
 
-// handle get request
+// handle get request for persons route
 app.get('/api/persons', (request, response) => {
     response.json(persons)
+})
+
+// handle get request for info route
+app.get('/info', (request, response) => {
+    // retrieve current date 
+    const date = new Date()
+
+    // format string
+    const str = `
+        Phonebook has info for ${persons.length} people
+        <br/>
+        ${date}
+    `
+    response.send(str)
 })
 
 // listen to requests on specified port
