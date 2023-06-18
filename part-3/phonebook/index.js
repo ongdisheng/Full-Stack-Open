@@ -28,12 +28,12 @@ let persons = [
     }
 ]
 
-// handle get request for persons route
+// handle get request for persons 
 app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
 
-// handle get request for info route
+// handle get request for info 
 app.get('/info', (request, response) => {
     // retrieve current date 
     const date = new Date()
@@ -45,6 +45,21 @@ app.get('/info', (request, response) => {
         ${date}
     `
     response.send(str)
+})
+
+// handle get request for a specific person
+app.get('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+
+    // retrieve person based on id
+    const person = persons.find(p => p.id === id)
+
+    // person exists
+    if (person) {
+        response.json(person)
+    } else {
+        response.status(404).end()
+    }
 })
 
 // listen to requests on specified port
