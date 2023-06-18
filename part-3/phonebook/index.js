@@ -62,6 +62,16 @@ app.get('/api/persons/:id', (request, response) => {
     }
 })
 
+// handle delete request for a specific person
+app.delete('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+
+    // delete person with specified id
+    persons = persons.filter(p => p.id !== id)
+
+    response.status(204).end()
+})
+
 // listen to requests on specified port
 const PORT = 3001
 app.listen(PORT, () => {
