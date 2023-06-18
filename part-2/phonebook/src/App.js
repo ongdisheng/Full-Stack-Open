@@ -82,6 +82,17 @@ const App = () => {
               setStatus(null)
             }, 5000)
           })
+          .catch(error => {
+            setMessage(`Information of ${person.name} has already been removed from server`)
+            setStatus('error')
+
+            // remove notification after 5s
+            setTimeout(() => {
+              setMessage(null)
+              setStatus(null)
+            }, 5000)
+            setPersons(persons.filter(p => p.id !== id))
+          })
       }
     }
 
