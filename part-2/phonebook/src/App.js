@@ -48,7 +48,7 @@ const App = () => {
       personService
         .remove(id)
         .then(deletedPerson => {
-          setPersons(persons.filter(p => p.id != id))
+          setPersons(persons.filter(p => p.id !== id))
         })
     }
   }
