@@ -1,8 +1,11 @@
 // create server
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
+// middleware
 app.use(express.json())
+app.use(morgan('tiny'))
 
 // person data
 let persons = [
