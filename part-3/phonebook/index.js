@@ -60,10 +60,6 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
-const generateId = () => {
-    return Math.floor((Math.random() * 10000))
-}
-
 // handle post request for persons
 app.post('/api/persons', (request, response) => {
     // retrieve new data from request
@@ -76,24 +72,25 @@ app.post('/api/persons', (request, response) => {
                     .json({error: 'missing name or number'})
     }
 
-    // found existing person with same name 
-    const existingPerson = persons.find(p => p.name === body.name)
-    if (existingPerson) {
-        return response
-                .status(400)
-                .json({error: 'name must be unique'})
-    }
+    // // found existing person with same name 
+    // const existingPerson = persons.find(p => p.name === body.name)
+    // if (existingPerson) {
+    //     return response
+    //             .status(400)
+    //             .json({error: 'name must be unique'})
+    // }
 
-    const person = {
+    const person = new Person({
         name: body.name,
-        number: body.number,
-        id: generateId()
-    }
+        number: body.number
+    })
 
-    // append newly created person
-    persons = persons.concat(person)
-
-    response.json(person)
+    // save to database
+    person
+        .save()
+        .then(savedPerson => {
+            response.json(savedPerson)
+        })
 })
 
 // listen to requests on specified port
