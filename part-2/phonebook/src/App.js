@@ -119,6 +119,16 @@ const App = () => {
             setStatus(null)
           }, 5000)
         })
+        .catch(error => {
+          setMessage(error.response.data.error)
+          setStatus('error')
+
+          // remove notification after 5s
+          setTimeout(() => {
+            setMessage(null)
+            setStatus(null)
+          }, 5000)
+        })
     }
   }
 
