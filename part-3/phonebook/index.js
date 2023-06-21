@@ -26,28 +26,31 @@ app.get('/info', (request, response) => {
     // retrieve current date 
     const date = new Date()
 
-    // format string
-    const str = `
-        Phonebook has info for ${persons.length} people
-        <br/>
-        ${date}
-    `
-    response.send(str)
+    Person
+        .count()
+        .then(count => {
+            // format string
+            const str = `
+                Phonebook has info for ${count} people
+                <br/>
+                ${date}
+            `
+            response.send(str)
+        })
 })
 
 // handle get request for a specific person
-app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-
-    // retrieve person based on id
-    const person = persons.find(p => p.id === id)
-
-    // person exists
-    if (person) {
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
+app.get('/api/persons/:id', (request, response, next) => {
+    Person
+        .findById(request.params.id)
+        .then(person => {
+            if (person) {
+                response.json(person)
+            } else {
+                response.status(404).end()
+            }
+        })
+        .catch(error => next(error))
 })
 
 // handle delete request for a specific person
