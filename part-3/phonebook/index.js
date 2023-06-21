@@ -51,13 +51,13 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 // handle delete request for a specific person
-app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-
-    // delete person with specified id
-    persons = persons.filter(p => p.id !== id)
-
-    response.status(204).end()
+app.delete('/api/persons/:id', (request, response, next) => {
+    Person
+        .findByIdAndRemove(request.params.id)
+        .then(removedPerson => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 // handle post request for persons
@@ -92,6 +92,24 @@ app.post('/api/persons', (request, response) => {
             response.json(savedPerson)
         })
 })
+
+// unknown endpoint middleware
+const unknownEndpoint = (request, response) => {
+    response.status(404).json({ error: 'unknown endpoint' })
+}
+app.use(unknownEndpoint)
+
+// error middleware 
+const errorHandler = (error, request, response, next) => {
+    console.log(error.message)
+
+    if (error.name === 'CastError') {
+        return response.status(400).json({ error: 'malformatted id' })
+    }
+
+    next(error)
+}
+app.use(errorHandler)
 
 // listen to requests on specified port
 const PORT = process.env.PORT 
