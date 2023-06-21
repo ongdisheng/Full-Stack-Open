@@ -87,8 +87,8 @@ app.post('/api/persons', (request, response, next) => {
     // missing data
     if (!body.name || !body.number) {
         return response
-                    .status(400)
-                    .json({error: 'missing name or number'})
+            .status(400)
+            .json({error: 'missing name or number'})
     }
 
     // // found existing person with same name 
