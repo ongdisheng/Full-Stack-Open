@@ -16,9 +16,20 @@ const favoriteBlog = (blogs) => {
             : current 
     }
 
-    return blogs.length === 0
+    let blog = blogs.length === 0
         ? null
         : blogs.reduce(reducer)
+
+    // format returned blog
+    if (blog) {
+        blog = {
+            title: blog.title,
+            author: blog.author,
+            likes: blog.likes
+        }
+    }
+
+    return blog
 }
 
 module.exports = {

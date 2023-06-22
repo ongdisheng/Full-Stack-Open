@@ -100,18 +100,19 @@ describe('favorite blog', () => {
 
     test('when list has only one blog, equals that blog', () => {
         const result = listHelper.favoriteBlog(listWithOneBlog)
-        expect(result).toEqual(listWithOneBlog[0])
+        expect(result).toEqual({
+            title: 'Go To Statement Considered Harmful',
+            author: 'Edsger W. Dijkstra',
+            likes: 5,
+        })
     })
 
     test('of a bigger list is returned right', () => {
         const result = listHelper.favoriteBlog(blogs)
         expect(result).toEqual({
-            _id: "5a422b3a1b54a676234d17f9",
             title: "Canonical string reduction",
             author: "Edsger W. Dijkstra",
-            url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
             likes: 12,
-            __v: 0
         })
     })
 })
