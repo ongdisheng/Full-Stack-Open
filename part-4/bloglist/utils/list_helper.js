@@ -1,3 +1,6 @@
+// import lodash
+const _ = require('lodash')
+
 // dummy function
 const dummy = (blogs) => {
     return 1
@@ -32,8 +35,27 @@ const favoriteBlog = (blogs) => {
     return blog
 }
 
+// function used to retrieve author with the most number of blogs
+const mostBlogs = (blogs) => {
+    // empty blogs
+    if (blogs.length === 0) {
+        return null
+    }
+
+    const result = _(blogs)
+        .groupBy('author')
+        .map((authorBlogs, authorName) => ({
+            author: authorName,
+            blogs: _.size(authorBlogs)
+        }))
+        .maxBy('blogs')
+    
+    return result
+}
+
 module.exports = {
     dummy,
     totalLikes,
-    favoriteBlog
+    favoriteBlog,
+    mostBlogs
 }
