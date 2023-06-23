@@ -53,9 +53,31 @@ const mostBlogs = (blogs) => {
     return result
 }
 
+// function used to retrieve author with the most number of likes
+const mostLikes = (blogs) => {
+    // empty blogs
+    if (blogs.length === 0) {
+        return null
+    }
+
+    const author = favoriteBlog(blogs).author
+    const count = blogs
+        .filter(blog => blog.author === author)
+        .reduce((sum, blog) => sum + blog.likes, 0)
+    
+    // format result
+    const result = {
+        author,
+        likes: count
+    }
+
+    return result
+}
+
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
 }
