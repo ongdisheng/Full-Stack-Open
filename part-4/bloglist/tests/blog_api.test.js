@@ -122,6 +122,27 @@ describe('HTTP DELETE', () => {
     })
 })
 
+describe('HTTP PUT', () => {
+
+    test('likes can be updated', async () => {
+        const blogsAtStart = await helper.blogsInDb()
+        const blogToUpdate = {
+            ...blogsAtStart[0],
+            likes: blogsAtStart[0].likes + 1
+        }
+
+        await api
+            .put(`/api/blogs/${blogToUpdate.id}`)
+            .send(blogToUpdate)
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+        
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+        expect(blogsAtEnd[0].likes).toBe(blogsAtStart[0].likes + 1)
+    })
+})
+
 // run after all tests finish execution
 afterAll(async () => {
     await mongoose.connection.close()
