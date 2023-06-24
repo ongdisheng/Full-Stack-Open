@@ -59,6 +59,21 @@ describe('HTTP POST', () => {
         const titles = blogsAtEnd.map(blog => blog.title)
         expect(titles).toContain(newBlog.title)
     })
+
+    test('default value of likes is zero', async () => {
+        const newBlog = {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html"
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+        
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0)
+    })
 })
 
 // run after all tests finish execution
