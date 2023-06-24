@@ -74,6 +74,21 @@ describe('HTTP POST', () => {
         const blogsAtEnd = await helper.blogsInDb()
         expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0)
     })
+
+    test('missing title', async () => {
+        const newBlog = {
+            author: "Edsger W. Dijkstra",
+            url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html"
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(400)
+        
+        const blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+    })
 })
 
 // run after all tests finish execution
