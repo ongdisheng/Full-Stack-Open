@@ -75,8 +75,8 @@ describe('HTTP POST', () => {
         expect(blogsAtEnd[blogsAtEnd.length - 1].likes).toBe(0)
     })
 
-    test('missing title', async () => {
-        const newBlog = {
+    test('missing title or url', async () => {
+        let newBlog = {
             author: "Edsger W. Dijkstra",
             url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html"
         }
@@ -86,7 +86,20 @@ describe('HTTP POST', () => {
             .send(newBlog)
             .expect(400)
         
-        const blogsAtEnd = await helper.blogsInDb()
+        let blogsAtEnd = await helper.blogsInDb()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+
+        newBlog = {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra"
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(400)
+        
+        blogsAtEnd = await helper.blogsInDb()
         expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
     })
 })
