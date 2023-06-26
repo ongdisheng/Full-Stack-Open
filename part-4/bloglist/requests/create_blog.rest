@@ -1,9 +1,10 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImhhcnJ5IiwiaWQiOiI2NDk4ZThlNjY1NjJhYmM5NzkwYTdhMzIiLCJpYXQiOjE2ODc3NTE4NjZ9.p-AoHrMtpttij1_M7BaQwTczh02A8CpadkpFfB_zYNo
 
 {
-    "title": "Blockchain Developer Roadmap",
-    "author": "Mary Jane",
-    "url": "https://roadmap.sh/blockchain",
-    "likes": 60
+    "title": "Software Architect Roadmap",
+    "author": "Jerry Doe",
+    "url": "https://roadmap.sh/software-architect",
+    "likes": 20
 }
