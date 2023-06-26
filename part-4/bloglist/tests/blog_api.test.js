@@ -2,17 +2,37 @@
 const supertest = require('supertest')
 const mongoose = require('mongoose')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 
+// initialize token
+let token = null
+
 // reset database state before running each test
 beforeEach(async () => {
-    await Blog.deleteMany({})
 
+    // register user 
+    await User.deleteMany({})
+    const user = helper.initialUsers[0]
+    await api
+        .post('/api/users')
+        .send(user)
+    
+    // login user 
+    const response = await api
+        .post('/api/login')
+        .send(user)
+    token = response.body.token
+
+    // save initial blogs to database 
+    await Blog.deleteMany({})
     for (let blog of helper.initialBlogs) {
-        let blogObject = new Blog(blog)
-        await blogObject.save()
+        await api
+            .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
+            .send(blog)
     }
 })
 
@@ -49,6 +69,7 @@ describe('HTTP POST', () => {
 
         await api
             .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
             .send(newBlog)
             .expect(201)
             .expect('Content-Type', /application\/json/)
@@ -69,6 +90,7 @@ describe('HTTP POST', () => {
 
         await api
             .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
             .send(newBlog)
         
         const blogsAtEnd = await helper.blogsInDb()
@@ -83,6 +105,7 @@ describe('HTTP POST', () => {
 
         await api
             .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
             .send(newBlog)
             .expect(400)
         
@@ -96,11 +119,26 @@ describe('HTTP POST', () => {
 
         await api
             .post('/api/blogs')
+            .set('Authorization', `Bearer ${token}`)
             .send(newBlog)
             .expect(400)
         
         blogsAtEnd = await helper.blogsInDb()
         expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+    })
+
+    test('missing token', async () => {
+        const newBlog = {
+            title: "Canonical string reduction",
+            author: "Edsger W. Dijkstra",
+            url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
+            likes: 12,
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(401)
     })
 })
 
@@ -112,6 +150,7 @@ describe('HTTP DELETE', () => {
 
         await api
             .delete(`/api/blogs/${blogToDelete.id}`)
+            .set('Authorization', `Bearer ${token}`)
             .expect(204)
         
         const blogsAtEnd = await helper.blogsInDb()

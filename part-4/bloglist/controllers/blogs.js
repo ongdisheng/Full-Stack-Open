@@ -19,6 +19,9 @@ blogsRouter.post('/', async (request, response) => {
 
     // retrieve user from request object
     const user = request.user
+    if (!user) {
+        return response.status(401).end()
+    }
 
     // create blog
     const blog = new Blog({
