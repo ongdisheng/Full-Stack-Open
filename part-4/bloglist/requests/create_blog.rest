@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "Full Stack Developer Roadmap",
-    "author": "John Smith",
-    "url": "https://roadmap.sh/full-stack",
-    "likes": 100
+    "title": "Blockchain Developer Roadmap",
+    "author": "Mary Jane",
+    "url": "https://roadmap.sh/blockchain",
+    "likes": 60
 }
