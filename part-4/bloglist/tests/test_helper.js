@@ -1,5 +1,6 @@
-// import blog model
+// import blog and user model
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const initialBlogs = [
     {
@@ -16,13 +17,29 @@ const initialBlogs = [
     }
 ]
 
-// retrieve current database state
+const initialUsers = [
+    {
+        username: 'harry',
+        name: 'Harry Kane',
+        password: '123456'
+    }
+]
+
+// retrieve blogs from current database state
 const blogsInDb = async () => {
     const blogs = await Blog.find({})
     return blogs.map(blog => blog.toJSON())
 }
 
+// retrieve users from current database state 
+const usersInDb = async () => {
+    const users = await User.find({})
+    return users.map(user => user.toJSON())
+} 
+
 module.exports = {
     initialBlogs,
-    blogsInDb
+    initialUsers,
+    blogsInDb,
+    usersInDb
 }

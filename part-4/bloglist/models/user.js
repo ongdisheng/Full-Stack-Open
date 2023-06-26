@@ -1,12 +1,20 @@
 // import library
 const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator') 
 
 // define schema
 const userSchema = new mongoose.Schema({
-    username: String,
+    username: {
+        type: String,
+        required: true,
+        minlength: 3,
+        unique: true
+    },
     name: String,
     passwordHash: String
 })
+
+userSchema.plugin(uniqueValidator)
 
 // format users returned from database 
 userSchema.set('toJSON', {
