@@ -1,6 +1,7 @@
 // import statements 
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -13,6 +14,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [message, setMessage] = useState(null)
 
   // retrieve blogs from server
   useEffect(() => {
@@ -37,12 +39,19 @@ const App = () => {
   const handleLogin = async event => {
     event.preventDefault()
 
-    const user = await loginService.login({ username, password })
-    window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
-    blogService.setToken(user.token)
-    setUser(user)
-    setUsername('')
-    setPassword('')
+    try {
+      const user = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
+      blogService.setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+    } catch {
+      setMessage('wrong username or password')
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    }
   }
 
   // event handler for logout
@@ -55,11 +64,23 @@ const App = () => {
   const addBlog = async event => {
     event.preventDefault()
 
-    const blog = await blogService.create({ title, author, url })
-    setBlogs(blogs.concat(blog))
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    try {
+      const blog = await blogService.create({ title, author, url })
+      setBlogs(blogs.concat(blog))
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+
+      setMessage(`a new blog ${title} by ${author} added`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    } catch {
+      setMessage('invalid blog')
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    }
   }
 
   // render login form
@@ -67,6 +88,9 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification 
+          message={message}
+        />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -95,6 +119,9 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
+      <Notification 
+        message={message}
+      />
       {user.name} logged in 
       <button onClick={handleLogout}>logout</button>
 
