@@ -77,6 +77,19 @@ const App = () => {
       })
   }
 
+  // event handler for deleting blog
+  const deleteBlog = id => {
+    const blog = blogs.find(blog => blog.id === id)
+
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      blogService
+        .remove(id)
+        .then(() => {
+          setBlogs(blogs.filter(blog => blog.id !== id))
+        })
+    }
+  }
+
   // event handler for creating blog
   const createBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
@@ -152,7 +165,9 @@ const App = () => {
         <Blog 
           key={blog.id} 
           blog={blog} 
+          user={user}
           handleLike={() => updateLike(blog.id)}
+          handleDelete={() => deleteBlog(blog.id)}
         />
       )}
     </div>

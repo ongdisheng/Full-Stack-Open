@@ -1,7 +1,7 @@
 // import library
 import { useState } from 'react'
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({ blog, user, handleLike, handleDelete }) => {
   const [detail, setDetail] = useState(false)
 
   // event handler for button
@@ -33,6 +33,10 @@ const Blog = ({ blog, handleLike }) => {
               <button onClick={handleLike}>like</button>
             </div>
             <div>{blog.user.name}</div>
+            {
+              user.username === blog.user.username &&
+              <button onClick={handleDelete}>remove</button>
+            }
           </div>
         }
       </div>
