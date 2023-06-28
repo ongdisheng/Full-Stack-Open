@@ -18,6 +18,9 @@ const App = () => {
   // define blog form reference object
   const blogFormRef = useRef() 
 
+  // sort blogs in decreasing order 
+  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+
   // retrieve blogs from server
   useEffect(() => {
     blogService
@@ -145,7 +148,7 @@ const App = () => {
         />
       </Togglable>
       
-      {blogs.map(blog =>
+      {sortedBlogs.map(blog =>
         <Blog 
           key={blog.id} 
           blog={blog} 
