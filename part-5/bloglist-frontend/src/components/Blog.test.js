@@ -28,16 +28,37 @@ test('render title and author only by default', () => {
   expect(div).not.toHaveTextContent('60')
 })
 
-test('render url and likes after button click', async () => {
+test('render url and likes after `view` button click', async () => {
   // setup user event
   const user = userEvent.setup()
 
-  // simulate button click
+  // simulate view button click
   const { container } = render(<Blog blog={blog} user={user} />)
-  const button = screen.getByText('view')
-  await user.click(button)
+  const viewButton = screen.getByText('view')
+  await user.click(viewButton)
 
   const div = container.querySelector('.blog')
   expect(div).toHaveTextContent('https://roadmap.sh/blockchain')
   expect(div).toHaveTextContent('60')
+})
+
+test('click `like` button twice', async () => {
+  // setup user event and mock function
+  const user = userEvent.setup()
+  const handleLike = jest.fn()
+
+  // simulate view button click
+  render(<Blog 
+    blog={blog} 
+    user={user}
+    handleLike={handleLike} 
+  />)
+  const viewButton = screen.getByText('view')
+  await user.click(viewButton)
+
+  // simulate like button click
+  const likeButton = screen.getByText('like')
+  await user.click(likeButton)
+  await user.click(likeButton)
+  expect(handleLike.mock.calls).toHaveLength(2)
 })
