@@ -1,4 +1,4 @@
-// import statements 
+// import statements
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
@@ -7,7 +7,7 @@ import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
-// app component 
+// app component
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
@@ -16,9 +16,9 @@ const App = () => {
   const [message, setMessage] = useState(null)
 
   // define blog form reference object
-  const blogFormRef = useRef() 
+  const blogFormRef = useRef()
 
-  // sort blogs in decreasing order 
+  // sort blogs in decreasing order
   const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
 
   // retrieve blogs from server
@@ -30,7 +30,7 @@ const App = () => {
       })
   }, [])
 
-  // retrieve user from browser local storage 
+  // retrieve user from browser local storage
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
@@ -51,7 +51,7 @@ const App = () => {
       setUser(user)
       setUsername('')
       setPassword('')
-    } catch {
+    } catch(exception) {
       setMessage('wrong username or password')
       setTimeout(() => {
         setMessage(null)
@@ -104,7 +104,7 @@ const App = () => {
           setMessage(null)
         }, 5000)
       })
-      .catch(error => {
+      .catch(() => {
         setMessage('invalid blog')
 
         setTimeout(() => {
@@ -118,13 +118,13 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification 
+        <Notification
           message={message}
         />
         <form onSubmit={handleLogin}>
           <div>
             username
-            <input 
+            <input
               type='text'
               value={username}
               name='Username'
@@ -133,7 +133,7 @@ const App = () => {
           </div>
           <div>
             password
-            <input 
+            <input
               type='password'
               value={password}
               name='Password'
@@ -149,22 +149,22 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification 
+      <Notification
         message={message}
       />
-      {user.name} logged in 
+      {user.name} logged in
       <button onClick={handleLogout}>logout</button>
 
       <Togglable buttonLabel='new blog' ref={blogFormRef}>
-        <BlogForm 
+        <BlogForm
           createBlog={createBlog}
         />
       </Togglable>
-      
+
       {sortedBlogs.map(blog =>
-        <Blog 
-          key={blog.id} 
-          blog={blog} 
+        <Blog
+          key={blog.id}
+          blog={blog}
           user={user}
           handleLike={() => updateLike(blog.id)}
           handleDelete={() => deleteBlog(blog.id)}
