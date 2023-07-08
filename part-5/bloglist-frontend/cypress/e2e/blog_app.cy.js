@@ -42,4 +42,24 @@ describe('Blog app', function() {
       cy.get('.notification').contains('wrong username or password')
     })
   })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      // login user 
+      cy.login({ username: 'jadon', password: '123456' })
+    })
+
+    it('A blog can be created', function() {
+      // fill in blog details 
+      cy.contains('new blog').click()
+      cy.contains('title').find('input').type('Harry Maguire Legacy')
+      cy.contains('author').find('input').type('David Moyes')
+      cy.contains('url').find('input').type('https://www.manutd.com/')
+      cy.get('#create-button').click()
+      
+      // verify correctness
+      cy.get('.notification').contains('a new blog Harry Maguire Legacy by David Moyes added')
+      cy.get('html').contains('Harry Maguire Legacy David Moyes')
+    })
+  })
 })
