@@ -98,7 +98,7 @@ describe('Blog app', function() {
         cy.contains('Go Developer Roadmap Phil Jones').should('not.exist')
       })
 
-      it.only('Remove button cannot be seen by another user', function() {
+      it('Remove button cannot be seen by another user', function() {
         // logout current user
         cy.contains('logout').click()
 
@@ -107,9 +107,32 @@ describe('Blog app', function() {
 
         // expand view
         cy.contains('view').click()
-        
+
         // remove button is not available
         cy.contains('remove').should('not.exist')
+      })
+
+      describe('Multiple blogs', function() {
+        beforeEach(function() {
+          cy.createBlog({
+            title: 'Manchester City',
+            author: 'Pep Guardiola',
+            url: 'https://www.mancity.com/',
+            likes: 0
+          })
+        })
+
+        it.only('Blogs are sorted', function() {
+          // expand second blog
+          cy.contains('Manchester').find('button').click()
+
+          // update like of second blog
+          cy.contains('like').click()
+
+          // verify blogs order
+          cy.get('.blog').eq(0).should('contain', 'Manchester City Pep Guardiola')
+          cy.get('.blog').eq(1).should('contain', 'Go Developer Roadmap Phil Jones')
+        })
       })
     })
   })
