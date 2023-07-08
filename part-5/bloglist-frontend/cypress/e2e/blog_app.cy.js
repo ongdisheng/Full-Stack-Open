@@ -73,13 +73,22 @@ describe('Blog app', function() {
         })
       })
 
-      it.only('A blog can be liked', function() {
+      it('A blog can be liked', function() {
         // expand view
         cy.contains('view').click()
 
-        // verify correctness
+        // update like
         cy.contains('like').click()
         cy.contains('1')
+      })
+
+      it('A blog can be deleted', function() {
+        // expand view
+        cy.contains('view').click()
+
+        // delete blog
+        cy.contains('remove').click()
+        cy.contains('Go Developer Roadmap Phil Jones').should('not.exist')
       })
     })
   })
