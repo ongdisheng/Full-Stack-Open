@@ -3,11 +3,18 @@ describe('Blog app', function() {
     // reset database state
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
 
-    // create a user 
-    const user = {
-      username: "jadon",
-      name: "Jadon Sancho",
-      password: "123456"
+    // create users 
+    let user = {
+      username: 'jadon',
+      name: 'Jadon Sancho',
+      password: '123456'
+    }
+    cy.request('POST', 'http://localhost:3003/api/users', user)
+
+    user = {
+      username: 'harry',
+      name: 'Harry Kane',
+      password: '123456'
     }
     cy.request('POST', 'http://localhost:3003/api/users', user)
 
@@ -89,6 +96,20 @@ describe('Blog app', function() {
         // delete blog
         cy.contains('remove').click()
         cy.contains('Go Developer Roadmap Phil Jones').should('not.exist')
+      })
+
+      it.only('Remove button cannot be seen by another user', function() {
+        // logout current user
+        cy.contains('logout').click()
+
+        // login for another user
+        cy.login({ username: 'harry', password: '123456' })
+
+        // expand view
+        cy.contains('view').click()
+        
+        // remove button is not available
+        cy.contains('remove').should('not.exist')
       })
     })
   })
