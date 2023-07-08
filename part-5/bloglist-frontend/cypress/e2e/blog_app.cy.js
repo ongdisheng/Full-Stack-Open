@@ -1,7 +1,7 @@
 describe('Blog app', function() {
   beforeEach(function() {
     // reset database state
-    cy.request('POST', 'http://localhost:3003/api/testing/reset')
+    cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
 
     // create users 
     let user = {
@@ -9,16 +9,16 @@ describe('Blog app', function() {
       name: 'Jadon Sancho',
       password: '123456'
     }
-    cy.request('POST', 'http://localhost:3003/api/users', user)
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
 
     user = {
       username: 'harry',
       name: 'Harry Kane',
       password: '123456'
     }
-    cy.request('POST', 'http://localhost:3003/api/users', user)
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
 
-    cy.visit('http://localhost:3000')
+    cy.visit('')
   })
 
   it('Login form is shown', function() {
@@ -122,7 +122,7 @@ describe('Blog app', function() {
           })
         })
 
-        it.only('Blogs are sorted', function() {
+        it('Blogs are sorted', function() {
           // expand second blog
           cy.contains('Manchester').find('button').click()
 
