@@ -61,5 +61,26 @@ describe('Blog app', function() {
       cy.get('.notification').contains('a new blog Harry Maguire Legacy by David Moyes added')
       cy.get('html').contains('Harry Maguire Legacy David Moyes')
     })
+
+    describe('A blog exists', function() {
+      beforeEach(function() {
+        // create a blog
+        cy.createBlog({
+          title: 'Go Developer Roadmap',
+          author: 'Phil Jones',
+          url: 'https://roadmap.sh/golang',
+          likes: 0
+        })
+      })
+
+      it.only('A blog can be liked', function() {
+        // expand view
+        cy.contains('view').click()
+
+        // verify correctness
+        cy.contains('like').click()
+        cy.contains('1')
+      })
+    })
   })
 })
