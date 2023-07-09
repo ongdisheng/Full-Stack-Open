@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { incrementVote, createAnecdote } from './reducers/anecdoteReducer'
 
 const App = () => {
-  const anecdotes = useSelector(state => state)
+  // order by number of votes
+  const anecdotes = useSelector(state => state.sort((a, b) => b.votes - a.votes))
   const dispatch = useDispatch()
 
   // event handler for vote button
