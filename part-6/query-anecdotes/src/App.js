@@ -1,12 +1,25 @@
-import { useQuery } from 'react-query'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
-import { getAnecdotes } from './requests'
+import { getAnecdotes, updateVote } from './requests'
 
 const App = () => {
+  const queryClient = useQueryClient()
 
+  // define mutation for updating vote
+  const voteMutation = useMutation(updateVote, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('anecdotes')
+    }
+  })
+
+  // event handler for vote button
   const handleVote = (anecdote) => {
-    console.log('vote')
+    const newAnecdote = {
+      ...anecdote,
+      votes: anecdote.votes + 1
+    }
+    voteMutation.mutate(newAnecdote)
   }
 
   // retrieve data from server
@@ -27,7 +40,7 @@ const App = () => {
   if (result.isError) {
     return <div>anecdote service not available due to problems in server</div>
   }
-  
+
   const anecdotes = result.data
 
   return (
