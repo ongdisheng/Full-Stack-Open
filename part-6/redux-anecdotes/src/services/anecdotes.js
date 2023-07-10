@@ -8,4 +8,11 @@ const getAll = async () => {
   return response.data
 }
 
-export default { getAll }
+// create a new anecdote 
+const create = async content => {
+  const anecdote = { content, votes: 0 }
+  const response = await axios.post(baseUrl, anecdote)
+  return response.data
+}
+
+export default { getAll, create }
