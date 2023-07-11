@@ -2,9 +2,11 @@ import { useQuery, useMutation, useQueryClient } from 'react-query'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { getAnecdotes, updateVote } from './requests'
+import { useNotificationDispatch } from './NotificationContext'
 
 const App = () => {
   const queryClient = useQueryClient()
+  const dispatchNotification = useNotificationDispatch()
 
   // define mutation for updating vote
   const voteMutation = useMutation(updateVote, {
@@ -20,6 +22,10 @@ const App = () => {
       votes: anecdote.votes + 1
     }
     voteMutation.mutate(newAnecdote)
+    dispatchNotification({ type: 'SET', payload: `anecdote '${anecdote.content}' voted` })
+    setTimeout(() => {
+      dispatchNotification({ type: 'CLEAR' })
+    }, 5000)
   }
 
   // retrieve data from server
