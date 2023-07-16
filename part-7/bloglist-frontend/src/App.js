@@ -1,5 +1,7 @@
 // import statements
 import { useState, useEffect, useRef } from 'react'
+import { useDispatch } from 'react-redux'
+import { createNotification, clearNotification } from './reducers/notificationReducer'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -13,7 +15,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [message, setMessage] = useState(null)
+  const dispatch = useDispatch()
 
   // define blog form reference object
   const blogFormRef = useRef()
@@ -50,9 +52,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setMessage('wrong username or password')
+      dispatch(createNotification('wrong username or password'))
       setTimeout(() => {
-        setMessage(null)
+        dispatch(clearNotification())
       }, 5000)
     }
   }
@@ -92,19 +94,19 @@ const App = () => {
       .create(blogObject)
       .then((returnedBlog) => {
         setBlogs(blogs.concat({ ...returnedBlog, user }))
-        setMessage(
+        dispatch(createNotification(
           `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
-        )
+        ))
 
         setTimeout(() => {
-          setMessage(null)
+          dispatch(clearNotification())
         }, 5000)
       })
       .catch(() => {
-        setMessage('invalid blog')
+        dispatch(createNotification('invalid blog'))
 
         setTimeout(() => {
-          setMessage(null)
+          dispatch(clearNotification())
         }, 5000)
       })
   }
@@ -114,7 +116,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
-        <Notification message={message} />
+        <Notification />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -143,7 +145,7 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <Notification message={message} />
+      <Notification />
       {user.name} logged in
       <button onClick={handleLogout}>logout</button>
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
