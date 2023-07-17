@@ -17,6 +17,7 @@ import Notification from './components/Notification'
 import Users from './components/Users'
 import User from './components/User'
 import Blogs from './components/Blogs'
+import Menu from './components/Menu'
 import blogService from './services/blogs'
 import userService from './services/users'
 import loginService from './services/login'
@@ -176,10 +177,9 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
       <Notification />
-      {user.name} logged in
-      <button onClick={handleLogout}>logout</button>
+      <Menu user={user} handleLogout={handleLogout} />
+      <h2>blog app</h2>
       <Routes>
         <Route
           path="/"
@@ -193,7 +193,17 @@ const App = () => {
         />
         <Route path="/users" element={<Users users={users} />} />
         <Route path="/users/:id" element={<User user={userBlogs} />} />
-        <Route path="/blogs/:id" element={<Blog blog={blog} user={user} updateLike={updateLike} deleteBlog={deleteBlog} />} />
+        <Route
+          path="/blogs/:id"
+          element={
+            <Blog
+              blog={blog}
+              user={user}
+              updateLike={updateLike}
+              deleteBlog={deleteBlog}
+            />
+          }
+        />
       </Routes>
     </div>
   )
