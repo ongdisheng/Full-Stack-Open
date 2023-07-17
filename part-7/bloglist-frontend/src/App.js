@@ -17,9 +17,11 @@ import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import Users from './components/Users'
+import User from './components/User'
 import blogService from './services/blogs'
+import userService from './services/users'
 import loginService from './services/login'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useMatch } from 'react-router-dom'
 
 const Blogs = ({
   blogFormRef,
@@ -53,12 +55,26 @@ const App = () => {
     [...state.blogs].sort((a, b) => b.likes - a.likes)
   )
   const user = useSelector((state) => state.user)
+  const [users, setUsers] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
 
   // define blog form reference object
   const blogFormRef = useRef()
+
+  // retrieve blogs added by a specific user
+  const match = useMatch('/users/:id')
+  const userBlogs = match
+    ? users.find((user) => user.id === match.params.id)
+    : null
+
+  // retrieve users from server
+  useEffect(() => {
+    userService.getAll().then((users) => {
+      setUsers(users)
+    })
+  }, [])
 
   // retrieve blogs from server
   useEffect(() => {
@@ -199,7 +215,8 @@ const App = () => {
             />
           }
         />
-        <Route path="/users" element={<Users blogs={blogs} />} />
+        <Route path="/users" element={<Users users={users} />} />
+        <Route path="/users/:id" element={<User user={userBlogs} />} />
       </Routes>
     </div>
   )
