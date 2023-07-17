@@ -11,6 +11,7 @@ import {
   removeBlog,
   updateBlog,
 } from './reducers/blogReducer'
+import { clearUser, setUser } from './reducers/userReducer'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -21,7 +22,7 @@ import loginService from './services/login'
 // app component
 const App = () => {
   const blogs = useSelector((state) => [...state.blogs].sort((a, b) => b.likes - a.likes))
-  const [user, setUser] = useState(null)
+  const user = useSelector(state => state.user)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
@@ -39,7 +40,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(setUser(user))
       blogService.setToken(user.token)
     }
   }, [])
@@ -52,7 +53,7 @@ const App = () => {
       const user = await loginService.login({ username, password })
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      setUser(user)
+      dispatch(setUser(user))
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -66,7 +67,7 @@ const App = () => {
   // event handler for logout
   const handleLogout = () => {
     window.localStorage.clear()
-    setUser(null)
+    dispatch(clearUser())
   }
 
   // event handler for update like
