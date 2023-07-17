@@ -13,41 +13,14 @@ import {
 } from './reducers/blogReducer'
 import { clearUser, setUser } from './reducers/userReducer'
 import Blog from './components/Blog'
-import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
 import Users from './components/Users'
 import User from './components/User'
+import Blogs from './components/Blogs'
 import blogService from './services/blogs'
 import userService from './services/users'
 import loginService from './services/login'
-import { Routes, Route, useMatch } from 'react-router-dom'
-
-const Blogs = ({
-  blogFormRef,
-  createBlog,
-  blogs,
-  user,
-  updateLike,
-  deleteBlog,
-}) => {
-  return (
-    <>
-      <Togglable buttonLabel="new blog" ref={blogFormRef}>
-        <BlogForm createBlog={createBlog} />
-      </Togglable>
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          user={user}
-          handleLike={() => updateLike(blog.id)}
-          handleDelete={() => deleteBlog(blog.id)}
-        />
-      ))}
-    </>
-  )
-}
+import { Routes, Route, useMatch, Link } from 'react-router-dom'
 
 // app component
 const App = () => {
@@ -64,9 +37,15 @@ const App = () => {
   const blogFormRef = useRef()
 
   // retrieve blogs added by a specific user
-  const match = useMatch('/users/:id')
-  const userBlogs = match
-    ? users.find((user) => user.id === match.params.id)
+  const userMatch = useMatch('/users/:id')
+  const userBlogs = userMatch
+    ? users.find((user) => user.id === userMatch.params.id)
+    : null
+
+  // retrieve a specific blog
+  const blogMatch = useMatch('/blogs/:id')
+  const blog = blogMatch
+    ? blogs.find((blog) => blog.id === blogMatch.params.id)
     : null
 
   // retrieve users from server
@@ -209,14 +188,12 @@ const App = () => {
               blogFormRef={blogFormRef}
               createBlog={createBlog}
               blogs={blogs}
-              user={user}
-              updateLike={updateLike}
-              deleteBlog={deleteBlog}
             />
           }
         />
         <Route path="/users" element={<Users users={users} />} />
         <Route path="/users/:id" element={<User user={userBlogs} />} />
+        <Route path="/blogs/:id" element={<Blog blog={blog} user={user} updateLike={updateLike} deleteBlog={deleteBlog} />} />
       </Routes>
     </div>
   )
