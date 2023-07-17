@@ -1,7 +1,16 @@
 // import statements
 import { useState, useEffect, useRef } from 'react'
-import { useDispatch } from 'react-redux'
-import { createNotification, clearNotification } from './reducers/notificationReducer'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  createNotification,
+  clearNotification,
+} from './reducers/notificationReducer'
+import {
+  initializeBlogs,
+  appendBlog,
+  removeBlog,
+  updateBlog,
+} from './reducers/blogReducer'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
@@ -11,7 +20,7 @@ import loginService from './services/login'
 
 // app component
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const blogs = useSelector((state) => state.blogs)
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -21,13 +30,11 @@ const App = () => {
   const blogFormRef = useRef()
 
   // sort blogs in decreasing order
-  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+  // const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
 
   // retrieve blogs from server
   useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      setBlogs(blogs)
-    })
+    dispatch(initializeBlogs())
   }, [])
 
   // retrieve user from browser local storage
@@ -71,7 +78,7 @@ const App = () => {
     const newBlog = { ...blog, likes: blog.likes + 1 }
 
     blogService.update(id, newBlog).then((updatedBlog) => {
-      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : updatedBlog)))
+      dispatch(updateBlog({ id, updatedBlog }))
     })
   }
 
@@ -81,7 +88,7 @@ const App = () => {
 
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       blogService.remove(id).then(() => {
-        setBlogs(blogs.filter((blog) => blog.id !== id))
+        dispatch(removeBlog(id))
       })
     }
   }
@@ -93,10 +100,12 @@ const App = () => {
     blogService
       .create(blogObject)
       .then((returnedBlog) => {
-        setBlogs(blogs.concat({ ...returnedBlog, user }))
-        dispatch(createNotification(
-          `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
-        ))
+        dispatch(appendBlog({ ...returnedBlog, user }))
+        dispatch(
+          createNotification(
+            `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
+          )
+        )
 
         setTimeout(() => {
           dispatch(clearNotification())
@@ -151,7 +160,7 @@ const App = () => {
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <BlogForm createBlog={createBlog} />
       </Togglable>
-      {sortedBlogs.map((blog) => (
+      {blogs.map((blog) => (
         <Blog
           key={blog.id}
           blog={blog}
