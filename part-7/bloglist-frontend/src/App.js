@@ -20,7 +20,7 @@ import loginService from './services/login'
 
 // app component
 const App = () => {
-  const blogs = useSelector((state) => state.blogs)
+  const blogs = useSelector((state) => [...state.blogs].sort((a, b) => b.likes - a.likes))
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -28,9 +28,6 @@ const App = () => {
 
   // define blog form reference object
   const blogFormRef = useRef()
-
-  // sort blogs in decreasing order
-  // const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
 
   // retrieve blogs from server
   useEffect(() => {
