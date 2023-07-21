@@ -166,7 +166,7 @@ const resolvers = {
   },
   Mutation: {
     addBook: (root, args) => {
-      const newBook = { ...args  }
+      const newBook = { ...args, id: uuid() }
       books = books.concat(newBook)
 
       // save new author
