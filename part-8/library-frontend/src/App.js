@@ -1,17 +1,15 @@
 import { useState } from 'react'
-import { useApolloClient, useQuery } from '@apollo/client'
+import { useApolloClient } from '@apollo/client'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
 import Recommendation from './components/Recommendation'
-import { ALL_BOOKS } from './queries'
 
 const App = () => {
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
   const client = useApolloClient()
-  const result = useQuery(ALL_BOOKS)
 
   const handleLogout = () => {
     setToken(null)
@@ -45,10 +43,7 @@ const App = () => {
 
       <Authors show={page === 'authors'} />
       
-      {
-        !result.loading &&
-        <Books show={page === 'books'} books={result.data.allBooks} />
-      }
+      <Books show={page === 'books'} />
 
       <NewBook show={page === 'add'} />
 
@@ -58,13 +53,8 @@ const App = () => {
         setToken={setToken} 
       />
 
-      {
-        !result.loading &&
-        <Recommendation 
-          show={page === 'recommend'}
-          books={result.data.allBooks}
-        />
-      }
+      <Recommendation show={page === 'recommend'} />
+
     </div>
   )
 }
