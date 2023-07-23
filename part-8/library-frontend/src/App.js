@@ -4,7 +4,7 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import LoginForm from './components/LoginForm'
-import Recommend from './components/Recommend'
+import Recommendation from './components/Recommendation'
 import { ALL_BOOKS } from './queries'
 
 const App = () => {
@@ -17,6 +17,9 @@ const App = () => {
     setToken(null)
     localStorage.clear()
     client.resetStore()
+    if (page !== 'authors' && page !== 'books') {
+      setPage('authors')
+    }
   }
 
   return (
@@ -55,9 +58,13 @@ const App = () => {
         setToken={setToken} 
       />
 
-      <Recommend 
-        show={page === 'recommend'}
-      />
+      {
+        !result.loading &&
+        <Recommendation 
+          show={page === 'recommend'}
+          books={result.data.allBooks}
+        />
+      }
     </div>
   )
 }
